@@ -5,7 +5,6 @@ import com.example.course.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.plaf.PanelUI;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,5 +29,17 @@ public class UserService {
 
   public void delete(Long id) {
     repository.deleteById(id);
+  }
+
+  public User update(Long id, User obj) {
+    User entity = repository.getReferenceById(id);
+    updateData(entity, obj);
+    return repository.save(entity);
+  }
+
+  private void updateData(User entity, User obj) {
+    entity.setName(obj.getName());
+    entity.setEmail(obj.getEmail());
+    entity.setPhone(obj.getPhone());
   }
 }
