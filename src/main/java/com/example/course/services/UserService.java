@@ -2,8 +2,10 @@ package com.example.course.services;
 
 import com.example.course.entities.User;
 import com.example.course.repositories.UserRepository;
+import com.example.course.services.exceptions.DatabaseException;
 import com.example.course.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +31,14 @@ public class UserService {
   }
 
   public void delete(Long id) {
-    repository.deleteById(id);
+    if (!repository.existsById(id)) {
+      throw new ResourceNotFoundException(id);
+    }
+    try {
+      repository.deleteById(id);
+    } catch (DataIntegrityViolationException e) {
+      throw new DatabaseException(e.getMessage());
+    }
   }
 
   public User update(Long id, User obj) {
